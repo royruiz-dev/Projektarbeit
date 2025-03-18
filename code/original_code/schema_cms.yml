@@ -1,0 +1,5 @@
+# schema_cms.yml file
+x_cms_sectools:
+  description: the list of security tools and configurations expected to be installed and managed, respectively
+  scope: cms
+  value: !include schema_cms_sectools.jq

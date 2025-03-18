@@ -1,0 +1,13 @@
+---
+# Vault token and address used to run imperva role
+# Refer to roles/os_sectools/imperva/defaults/main/main.yml
+hashi_vault_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+hashi_vault_addr: "{{ lookup('env', 'VAULT_ADDR') }}"
+
+# Goal is to use 'init.sectools' instead of init_sectools
+# To be refactored once the init.{} is implemented in the VM provisioning automation
+sectools: "{{ x_cms_sectools | default(init_sectools) }}"
+
+# These are used for testing and can be removed after code is merged with master
+sectools: "{{ ['auditd','ccs','cmsid','hids','imperva','rapid7','splunk','udagent'] | default(init_sectools) }}"
+sectools: "{{ ['auditd','ccs','cmsid','hids','rapid7','splunk','udagent'] | default(init_sectools) }}"

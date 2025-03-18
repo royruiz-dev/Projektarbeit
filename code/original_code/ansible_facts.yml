@@ -1,0 +1,66 @@
+# ansible_facts.yml file
+- hosts: all
+  gather_facts: false
+  become: true
+  ignore_errors: true
+
+  # the 'name' of each task becomes a JSON field that should match the JQ filter name defined in 'schema_ansible.yml'
+
+  tasks:
+    - name: facter
+      setup:
+        # warning: try and avoid the 'hardware' subset -- it can cause entire Ansible playbook hanging forever;
+        # this has been observed on bad/stale NFS mounts (manifested also by the 'df' command hanging on the target host)
+        gather_subset: "!hardware"
+        filter: "ansible_[dk][ie][sr]*"
+
+    - name: shell_exec
+      shell: |
+        SVCS=$(systemctl list-units --type=service --state=running --no-pager --no-legend)
+        echo '{
+          "boottime":'      $(stat -c %Z /proc)',
+          "cmsid":'         $(awk -F'[:=]' '$1=="INVENTORYID" && $2="CMS" {print int($3); exit}' /etc/SERVERINFO/ID 2>/dev/null || echo 0)',
+          "cfg": {
+            "audit1":'      $(grep -cis '^disk_full_action[[:space:]]*=[[:space:]]*rotate$' /etc/audit/auditd.conf ; [[ $? -gt 1 ]] && echo 0)',
+            "audit2":'      $(stat -c %G /var/log/audit 2>/dev/null | grep -c siemlogs)',
+            "esmrc":'       $(grep -cEis '^.*root.*systemctl.*(start|stop).*esmrc.*' /etc/cron.d/esmrc ; [[ $? -gt 1 ]] && echo 0)',
+            "scanmgr":'     $(grep -cis '^[[:space:]]*Match User.*scanmgr.*' /etc/ssh/sshd_config ; [[ $? -gt 1 ]] && echo 0)',
+            "scanmgr_key":' $(grep -cis '^[[:space:]]*ssh-rsa.*scanmgr.*' /home/scanmgr/.ssh/authorized_keys ; [[ $? -gt 1 ]] && echo 0)'
+          },
+          "pkg": {
+            "audit":'       $(rpm --quiet -q audit && echo 1 || echo 0)',
+            "ccsagent":'    $(rpm --quiet -q ccsagent && echo 1 || echo 0)',
+            "dsagent":'     $(rpm --quiet -q ENERGY-ds_agent && echo 1 || echo 0)',
+            "imperva":'     $( (/opt/imperva/installer/bin/racheckinst && /opt/imperva/ragent/bin/racheckinst) 2>/dev/null | grep -c 'All tests passed' )',
+            "splunk":'      $(rpm --quiet -q ENERGY-splunkforwarder && echo 1 || echo 0)',
+            "udagent":'     $(rpm --quiet -q ud-agent && echo 1 || echo 0)'
+          },
+          "svc": {
+            "audit":'       $(echo "$SVCS" | grep -cFw 'auditd.service')',
+            "dsagent":'     $(echo "$SVCS" | grep -cFw 'ds_agent.service')',
+            "imperva":'     $( (/opt/imperva/ragent/bin/rainit status && /opt/imperva/installer/bin/rainstallerinit status) 2>/dev/null | grep -c 'running' )',
+            "splunk":'      $(echo "$SVCS" | grep -cFw 'SplunkForwarder.service')',
+            "udagent":'     $(echo "$SVCS" | grep -cFw 'udagent.service')'
+          }
+        }'
+      changed_when: false
+      no_log: true
+      register: exec
+
+    - name: stdout_convert
+      set_fact:
+        sh: "{{ exec.stdout | from_json }}"
+      no_log: true
+
+    - name: shell
+      set_fact:
+        boottime: "{{ sh.boottime }}"
+        sectools:
+          cmsid: "{{ sh.cmsid != 0 and sh.cmsid == cms_id }}"
+          ccs: "{{ sh.pkg.ccsagent == 1 and sh.cfg.esmrc == 2 }}"
+          hids: "{{ sh.pkg.dsagent == 1 and sh.svc.dsagent == 1 }}"
+          udagent: "{{ sh.pkg.udagent == 1 and sh.svc.udagent == 1 }}"
+          rapid7: "{{ sh.cfg.scanmgr_key == 1 and sh.cfg.scanmgr == 1 }}"
+          auditd: "{{ sh.pkg.audit == 1 and sh.svc.audit == 1 and sh.cfg.audit1 == 1 and sh.cfg.audit2 == 1 }}"
+          splunk: "{{ sh.pkg.splunk == 1 and sh.svc.splunk == 1 }}"
+          imperva: "{{ sh.pkg.imperva == 2 and sh.svc.imperva == 2 }}"

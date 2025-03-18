@@ -1,0 +1,5 @@
+# schema_ansible.yml file
+x_installed_sectools:
+  description: the list of security tools and configurations actually installed and managed, respectively
+  scope: ansible
+  value: '.shell.ansible_facts.sectools | if type == "object" then [ to_entries[] | select(.key and .value ) | .key ] else null end'
