@@ -1,0 +1,32 @@
+# Consider moving playbook up one level
+# Rename the playbooks folder gc711.os_sectools to something more appropriate
+# Ensure the path in vars_files is correct
+# Rename the role folder gc711.os_sectools to something more appropriate
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  vars_files:
+    - ../../vars/external_vars.yml
+
+  tasks:
+    - name: vault token check
+      fail:
+        msg: "vault token was not set for {{ hashi_vault_addr }}"
+      when: hashi_vault_token | length == 0
+
+    - name: "Complete removal of ALL security tools installed on {{ inventory_hostname }}"
+      include_role:
+        name: "os_sectools/{{ sectool }}"
+      loop:
+        - ccs
+        - cmsid
+        - hids
+        - imperva
+        - rapid7
+        - splunk # removes splunk and auditd
+        - udagent
+      loop_control:
+        loop_var: sectool
+      tags:
+        - uninstall

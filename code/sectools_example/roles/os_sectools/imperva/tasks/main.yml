@@ -1,0 +1,25 @@
+- name: Stop ragent and agent installer
+  import_tasks: stop.yml
+  tags:
+    - stop
+    - uninstall
+    - never
+
+- name: Install and register ragent and agent installer
+  import_tasks: setup.yml
+  tags:
+    - install # not required; 'always' tag in <sectool> playbook ensure all tasks not tagged with 'never' are run
+    - sectools # tag required to run sectools part of os_fullsetup playbook when using the tag sectools
+
+- name: Start ragent and agent installer
+  import_tasks: start.yml
+  tags:
+    - start
+    - install # not required; 'always' tag in <sectool> playbook ensure all tasks not tagged with 'never' are run
+    - sectools # tag required to run sectools part of os_fullsetup playbook when using the tag sectools
+
+- name: Uninstall ragent and agent installer
+  import_tasks: uninstall.yml
+  tags:
+    - uninstall
+    - never

@@ -1,0 +1,63 @@
+---
+- name: run all needed os setup roles to reach baseline state
+  hosts: all
+  become: true
+  gather_facts: yes
+  vars_files:
+    - ../vars/external_vars.yml
+
+  pre_tasks:
+    - name: pre check if vault environment variables are set
+      fail:
+        msg: "Required environment variables are not set! Please export 'VAULT_ADDR' and 'VAULT_TOKEN'"
+      when: lookup('env', 'VAULT_TOKEN') | length == 0 or lookup('env', 'VAULT_ADDR') | length == 0
+
+  # important: os_ssh must be run last. Due to condition 'Match User'
+  tasks:
+    - name: Install os_network role
+      import_role:
+        name: os_network
+      tags: network
+
+    - name: Install os_selinux role
+      import_role:
+        name: os_selinux
+      tags: selinux
+
+    - name: Install os_configuration role
+      import_role:
+        name: os_configuration
+      tags: config
+
+    - name: Install os_filesystems role
+      import_role:
+        name: os_filesystems
+      tags: fs
+
+    - name: "Installing ALL security tools required for {{ inventory_hostname }}"
+      include_role:
+        name: "os_sectools/{{ sectool }}"
+      loop: "{{ sectools | reject('search', 'auditd') | list }}"
+      loop_control:
+        loop_var: sectool
+      tags:
+        - sectools
+      when: >
+        sectools is defined and
+        sectools | type_debug == "list" and
+        sectools | length > 0
+
+    - name: Install os_ldap_auth role
+      import_role:
+        name: os_ldap_auth
+      tags: ldap
+
+    - name: Install os_monitoring role
+      import_role:
+        name: os_monitoring
+      tags: mon
+
+    - name: Install os_ssh role
+      import_role:
+        name: os_ssh
+      tags: ssh
