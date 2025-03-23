@@ -10,7 +10,7 @@ The solution extracts attributes about each node from the **Configuration Manage
 
 The diagram below illustrates the system architecture before automation.
 
-<img src="./diagrams/system-architecture-and-interactions.png" width="65%" alt="Description" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;">
+<img src="./diagrams/system-architecture-and-interactions.png" width="45%" alt="System Architecture and Interactions" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 - **GitHub** serves three key functions:
   **(1)** **Hosting the infrastructure inventory**
@@ -39,8 +39,8 @@ The infrastructure inventory is maintained in three formats to support both auto
 **Note**: Certain details (e.g., hostnames, IP addresses) have been intentionally obscured for confidentiality reasons.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="./screenshots/web_app_inv_view.png" alt="Web Application View" width="65%" />
-    <img src="./screenshots/repo_host_data.png" alt="JSON for Ansible" width="35%" />
+    <img src="./screenshots/web_app_inv_view.png" alt="Web Application View" width="63%" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
+    <img src="./screenshots/repo_host_data.png" alt="JSON for Ansible" width="35%" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 </div>
 
 ---
@@ -56,7 +56,7 @@ It illustrates how different tools (CMS, Ansible, Jenkins, GitHub, Slack) and ne
 
 The numbered steps help explain how the data flows and how each part connects to the overall goal.
 
-<img src="./diagrams/proposed-solution-data-flow.png" width="65%" alt="Description" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;">
+<img src="./diagrams/proposed-solution-data-flow.png" width="60%" alt="Proposed Solution and Data Flow" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 1. The `update_from_cms.sh` script extracts the `x_cms_sectools` key from the CMS schema and creates a *CMS-scoped* `jq` filter to determine the **required** security tools for each host. The value of `x_cms_sectools` is derived from `cms_sectools.jq`, which defines the logic for identifying the expected security tools.
 

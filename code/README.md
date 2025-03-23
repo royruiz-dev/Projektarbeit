@@ -34,12 +34,12 @@ When running the `update_from_cms.sh` and `update_from_ansible.sh` scripts in **
 
 ##### `update_from_cms.sh` **Output**
 Displays JSON data obtained from CMS for single host. *(Note: This output has been redacted for security reasons.)*
-  ![CMS Debug Output](../screenshots/cms-sectools-debug.png)
+<img src="../screenshots/cms-sectools-debug.png" width="100%" alt="CMS Debug Output" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 ##### `update_from_ansible.sh` **Output**
 Shows JSON data obtained from Ansible for single host. *(Note: This output has been redacted for security reasons.)*
-  ![Ansible Debug Output](../screenshots/ansible-sectools-debug.png)
+<img src="../screenshots/ansible-sectools-debug.png" width="100%" alt="Ansible Debug Output" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 ##### `sectools_diff.sh` **Output**
 Compares security tool data from CMS and Ansible, identifying tools that are either not properly onboarded (marked as **not installed**) or **not required**. *(Note: This output has been redacted for security reasons.)*
-  ![Sectools Diff Output](../screenshots/sectools-diff-debug.png){width=50%}
+<img src="../screenshots/sectools-diff-debug.png" width="50%" alt="Sectools Diff Output" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />

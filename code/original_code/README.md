@@ -13,11 +13,11 @@ The logic for the **required** security tools is derived from a process flow dia
 ### Process Flow Diagrams
 #### Original Process Flow Diagram
 Defines security tool onboarding requirements.
-<img src="../../diagrams/tool_onboarding_pf.png" width="100%" alt="Description" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;">
+<img src="../../diagrams/tool_onboarding_pf.png" width="100%" alt="Security Tool Onboarding Process Flow Diagram" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 #### Optimized Process Flow Diagram
 Used for code translation.
-<img src="../../diagrams/cond_statements_code_flow.png" width="100%" alt="Description" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;">
+<img src="../../diagrams/cond_statements_code_flow.png" width="100%" alt="Optimized Process Flow Diagram" style="box-shadow: 0 0 15px rgba(255, 255, 255, 0.6); padding: 15px 15px 15px 0;" />
 
 ---
 
