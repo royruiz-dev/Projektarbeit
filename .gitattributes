@@ -1,1 +1,4 @@
-*.yml linguist-language=YAML
+sectools_example/playbooks/*.yml linguist-language=YAML
+sectools_example/playbooks/os_sectools/*.yml linguist-language=YAML
+sectools_example/roles/os_sectools/imperva/tasks/*.yml linguist-language=YAML
+sectools_example/vars/*.yml linguist-language=YAML
